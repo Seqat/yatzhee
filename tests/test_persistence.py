@@ -115,11 +115,11 @@ class TestGameSettings:
         assert settings.get("sound_enabled") is False
 
     def test_invalid_settings_file(self, temp_dir):
-        settings = GameSettings(temp_dir)
         # Write invalid JSON
-        with open(temp_dir / "settings.json", "w") as f:
+        settings_file = temp_dir / "settings.json"
+        with open(settings_file, "w") as f:
             f.write("invalid json {")
 
         # Should load defaults on error
-        settings2 = GameSettings(temp_dir)
-        assert settings2.get("theme") == "dark"
+        settings = GameSettings(temp_dir)
+        assert settings.get("theme") == "dark"
