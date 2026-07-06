@@ -69,36 +69,42 @@ class TestCategoryAssignment:
         # Now rolls_left is 2, can assign
         original_potential = game.potential("Chance")
         assert original_potential > 0  # Should have some potential
-        assert game.assign("Chance")
+        success, reason = game.assign("Chance")
+        assert success
         assert game.scores[0]["Chance"] == original_potential
 
     def test_cannot_assign_without_rolling(self):
         game = YahtzeeGame()
         # rolls_left is still MAX_ROLLS, cannot assign
-        assert not game.assign("Ones")
+        success, reason = game.assign("Ones")
+        assert not success
 
     def test_cannot_assign_same_category_twice(self):
         game = YahtzeeGame()
         game.roll()
-        assert game.assign("Ones")
+        success, reason = game.assign("Ones")
+        assert success
         # Ones is now taken for player 0
         assert game.scores[0]["Ones"] is not None
         # Switch back to player 0 for next turn to try assigning again
         game.current = 0
-        assert not game.assign("Ones")  # Should fail
+        success, reason = game.assign("Ones")
+        assert not success  # Should fail
 
     def test_assign_switches_player(self):
         game = YahtzeeGame()
         assert game.current == 0
         game.roll()
-        game.assign("Ones")
+        success, reason = game.assign("Ones")
+        assert success
         assert game.current == 1
 
     def test_assign_resets_dice_state(self):
         game = YahtzeeGame()
         game.roll()
         game.held = [True, False, True, False, False]
-        game.assign("Ones")
+        success, reason = game.assign("Ones")
+        assert success
         # After assignment, dice state should reset for next turn
         assert game.held == [False, False, False, False, False]
         assert game.rolls_left == MAX_ROLLS
@@ -115,7 +121,8 @@ class TestTurnFlow:
         for turn in range(6):
             assignments.append(game.current)
             game.roll()
-            game.assign(categories[turn])
+            success, reason = game.assign(categories[turn])
+            assert success
         
         # Players should alternate: 0, 1, 0, 1, 0, 1, ...
         assert assignments == [0, 1, 0, 1, 0, 1]
