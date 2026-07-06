@@ -1,8 +1,7 @@
 """Tests for the game state and turn flow."""
 
-import pytest
+from src.yahtzee.constants import MAX_ROLLS, TOTAL_ROUNDS, UPPER_BONUS, UPPER_BONUS_THRESHOLD
 from src.yahtzee.game import YahtzeeGame
-from src.yahtzee.constants import MAX_ROLLS, TOTAL_ROUNDS, UPPER_BONUS_THRESHOLD, UPPER_BONUS
 
 
 class TestGameInitialization:
@@ -123,7 +122,7 @@ class TestTurnFlow:
             game.roll()
             success, reason = game.assign(categories[turn])
             assert success
-        
+
         # Players should alternate: 0, 1, 0, 1, 0, 1, ...
         assert assignments == [0, 1, 0, 1, 0, 1]
 
@@ -154,9 +153,19 @@ class TestBonusLogic:
         game = YahtzeeGame()
         # Manually set scores below threshold
         game.scores[0] = {
-            "Ones": 5, "Twos": 4, "Threes": 6, "Fours": 0, "Fives": 0, "Sixes": 0,
-            "Three of a Kind": None, "Four of a Kind": None, "Full House": None,
-            "Small Straight": None, "Large Straight": None, "Yahtzee": None, "Chance": None,
+            "Ones": 5,
+            "Twos": 4,
+            "Threes": 6,
+            "Fours": 0,
+            "Fives": 0,
+            "Sixes": 0,
+            "Three of a Kind": None,
+            "Four of a Kind": None,
+            "Full House": None,
+            "Small Straight": None,
+            "Large Straight": None,
+            "Yahtzee": None,
+            "Chance": None,
         }
         upper_sub = game.upper_subtotal(0)
         assert upper_sub < UPPER_BONUS_THRESHOLD
@@ -166,9 +175,19 @@ class TestBonusLogic:
         game = YahtzeeGame()
         # Set scores to exactly the threshold
         game.scores[0] = {
-            "Ones": 5, "Twos": 10, "Threes": 15, "Fours": 16, "Fives": 10, "Sixes": 7,
-            "Three of a Kind": None, "Four of a Kind": None, "Full House": None,
-            "Small Straight": None, "Large Straight": None, "Yahtzee": None, "Chance": None,
+            "Ones": 5,
+            "Twos": 10,
+            "Threes": 15,
+            "Fours": 16,
+            "Fives": 10,
+            "Sixes": 7,
+            "Three of a Kind": None,
+            "Four of a Kind": None,
+            "Full House": None,
+            "Small Straight": None,
+            "Large Straight": None,
+            "Yahtzee": None,
+            "Chance": None,
         }
         upper_sub = game.upper_subtotal(0)
         assert upper_sub >= UPPER_BONUS_THRESHOLD
@@ -177,9 +196,19 @@ class TestBonusLogic:
     def test_total_includes_bonus(self):
         game = YahtzeeGame()
         game.scores[0] = {
-            "Ones": 5, "Twos": 10, "Threes": 15, "Fours": 16, "Fives": 10, "Sixes": 7,
-            "Three of a Kind": None, "Four of a Kind": None, "Full House": None,
-            "Small Straight": None, "Large Straight": None, "Yahtzee": None, "Chance": None,
+            "Ones": 5,
+            "Twos": 10,
+            "Threes": 15,
+            "Fours": 16,
+            "Fives": 10,
+            "Sixes": 7,
+            "Three of a Kind": None,
+            "Four of a Kind": None,
+            "Full House": None,
+            "Small Straight": None,
+            "Large Straight": None,
+            "Yahtzee": None,
+            "Chance": None,
         }
         upper_sub = game.upper_subtotal(0)
         total = game.total(0)
@@ -188,9 +217,19 @@ class TestBonusLogic:
     def test_lower_section_scores_count_in_total(self):
         game = YahtzeeGame()
         game.scores[0] = {
-            "Ones": 5, "Twos": 10, "Threes": 15, "Fours": 16, "Fives": 10, "Sixes": 7,
-            "Three of a Kind": 25, "Four of a Kind": None, "Full House": None,
-            "Small Straight": None, "Large Straight": None, "Yahtzee": None, "Chance": None,
+            "Ones": 5,
+            "Twos": 10,
+            "Threes": 15,
+            "Fours": 16,
+            "Fives": 10,
+            "Sixes": 7,
+            "Three of a Kind": 25,
+            "Four of a Kind": None,
+            "Full House": None,
+            "Small Straight": None,
+            "Large Straight": None,
+            "Yahtzee": None,
+            "Chance": None,
         }
         upper_sub = game.upper_subtotal(0)
         total = game.total(0)

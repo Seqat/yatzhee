@@ -14,5 +14,31 @@ dependencies = []
 [project.scripts]
 yahtzee = "yahtzee:main"
 
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "black>=23.0",
+    "ruff>=0.1.0",
+]
+
 [tool.setuptools.packages.find]
 where = ["src"]
+
+# Linting and formatting configuration
+[tool.ruff]
+line-length = 100
+target-version = "py38"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]  # pycodestyle, pyflakes, warnings, isort
+ignore = ["E501"]  # Line too long (handled by black)
+
+[tool.black]
+line-length = 100
+target-version = ["py38"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-v --tb=short"

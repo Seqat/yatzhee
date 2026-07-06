@@ -2,7 +2,7 @@
 
 import json
 from pathlib import Path
-from typing import List, Dict
+from typing import Dict, List
 
 
 class HighScoreManager:
@@ -10,7 +10,7 @@ class HighScoreManager:
 
     def __init__(self, data_dir: Path | None = None):
         """Initialize the high score manager.
-        
+
         Args:
             data_dir: Directory to store high score data. Defaults to ~/.yahtzee
         """
@@ -22,16 +22,16 @@ class HighScoreManager:
 
     def load_scores(self, limit: int = 10) -> List[Dict]:
         """Load high scores from disk.
-        
+
         Args:
             limit: Maximum number of scores to return
-            
+
         Returns:
             List of score dictionaries sorted by score descending
         """
         if not self.scores_file.exists():
             return []
-        
+
         try:
             with open(self.scores_file, "r") as f:
                 scores = json.load(f)
@@ -43,15 +43,16 @@ class HighScoreManager:
 
     def add_score(self, player_name: str, score: int, game_type: str = "local"):
         """Add a new high score.
-        
+
         Args:
             player_name: Name of the player
             score: Final score
             game_type: Type of game ("local", "ai_easy", "ai_hard")
         """
         import time
+
         scores = self.load_scores(limit=100)  # Keep more in memory to check if it's a high score
-        
+
         new_entry = {
             "player": player_name,
             "score": score,
@@ -60,10 +61,10 @@ class HighScoreManager:
         }
         scores.append(new_entry)
         scores.sort(key=lambda x: (-x["score"], -x.get("timestamp", 0)))
-        
+
         # Keep top 50
         scores = scores[:50]
-        
+
         try:
             with open(self.scores_file, "w") as f:
                 json.dump(scores, f, indent=2)
@@ -72,11 +73,11 @@ class HighScoreManager:
 
     def is_high_score(self, score: int, min_rank: int = 10) -> bool:
         """Check if a score would make the high score list.
-        
+
         Args:
             score: The score to check
             min_rank: Maximum rank to consider a high score
-            
+
         Returns:
             True if the score would be in the top min_rank
         """

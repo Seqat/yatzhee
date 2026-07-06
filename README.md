@@ -39,11 +39,11 @@ A classic Yahtzee dice game built with Python and Tkinter, featuring a sleek dar
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/<your-username>/yahtzee.git
+git clone https://github.com/Seqat/yahtzee.git
 cd yahtzee
 ```
 
-### 2. Create a virtual environment (optional)
+### 2. Create and activate a virtual environment
 
 **macOS / Linux:**
 ```bash
@@ -63,7 +63,7 @@ python -m venv venv
 venv\Scripts\Activate.ps1
 ```
 
-### 3. Install the package
+### 3. Install dependencies
 
 ```bash
 pip install -e .
@@ -75,10 +75,88 @@ pip install -e .
 yahtzee
 ```
 
-Alternatively, without installing:
+**Alternative methods:**
+- Using Python module: `python -m yahtzee`
+- Using Make (macOS/Linux): `make run`
+
+## 🛠️ Development
+
+### Install with dev dependencies
 
 ```bash
-python -m yahtzee
+pip install -e ".[dev]"
+```
+
+Or using Make:
+```bash
+make dev
+```
+
+### Running tests
+
+```bash
+pytest tests/ -v
+```
+
+Using Make:
+```bash
+make test          # Run tests
+make test-cov      # Run tests with coverage report
+```
+
+### Code quality
+
+```bash
+ruff check src/ tests/     # Lint code
+black --check src/ tests/  # Check formatting
+black src/ tests/          # Format code
+```
+
+Using Make:
+```bash
+make lint          # Lint with ruff
+make format-check  # Check formatting
+make format        # Auto-format with black
+```
+
+### Project structure
+
+```
+yahtzee/
+├── src/yahtzee/           # Main package
+│   ├── __init__.py        # Entry point
+│   ├── __main__.py        # CLI launcher
+│   ├── constants.py       # Game constants and theme
+│   ├── game.py            # Core game logic
+│   ├── scoring.py         # Scoring functions
+│   ├── ai.py              # AI opponent logic
+│   ├── persistence.py     # High scores and settings
+│   ├── settings.py        # User preferences
+│   └── ui/                # Tkinter UI components
+│       ├── app.py
+│       ├── widgets.py
+│       └── tooltip.py
+├── tests/                 # Test suite (75+ tests)
+│   ├── test_game.py
+│   ├── test_scoring.py
+│   ├── test_validation.py
+│   └── test_persistence.py
+├── pyproject.toml         # Package configuration
+├── Makefile              # Development commands
+└── README.md
+```
+
+### Test coverage
+
+The project has comprehensive test coverage for:
+- **Scoring logic** (24 tests) — All 13 categories with edge cases
+- **Game flow** (22 tests) — Turn alternation, state management, bonuses
+- **Validation** (16 tests) — Input validation and error reporting
+- **Persistence** (13 tests) — High scores and settings storage
+
+Run tests with coverage:
+```bash
+pytest tests/ --cov=src/yahtzee --cov-report=html
 ```
 
 ## 🎯 How to Play
@@ -105,28 +183,52 @@ python -m yahtzee
 
 ## 🛠 Tech Stack
 
-- **Language:** Python 3
+- **Language:** Python 3.8+
 - **GUI Framework:** Tkinter (standard library)
+- **Testing:** Pytest with coverage
+- **Linting:** Ruff
+- **Formatting:** Black
+- **CI/CD:** GitHub Actions
 - **Dependencies:** None — uses only Python standard library modules
 
-## 📁 Project Structure
+## 🔄 CI/CD
 
+This project uses GitHub Actions to automatically:
+- Run tests on all pushes and pull requests
+- Test across Python 3.8, 3.9, 3.10, 3.11
+- Test on macOS, Ubuntu, and Windows
+- Check code formatting and linting
+- Upload coverage reports
+
+**Status badges:** (Add these to the top of README after setting up Actions)
+```markdown
+[![Tests](https://github.com/Seqat/yahtzee/actions/workflows/tests.yml/badge.svg)](https://github.com/Seqat/yahtzee/actions/workflows/tests.yml)
 ```
-yatzhee/
-├── pyproject.toml            # Package metadata & entry point
-├── src/
-│   └── yahtzee/
-│       ├── __init__.py       # Package entry point (main())
-│       ├── __main__.py       # `python -m yahtzee` support
-│       ├── constants.py      # Game rules constants & static data
-│       ├── theme.py          # Colour palette
-│       ├── scoring.py        # Category scoring functions
-│       ├── game.py           # YahtzeeGame state & turn flow
-│       ├── ai.py             # AIPlayer (easy/hard difficulty)
-│       └── ui/
-│           ├── app.py        # YahtzeeApp (Tkinter window)
-│           ├── tooltip.py    # Hover tooltip widget
-│           └── widgets.py    # Canvas drawing helpers
-├── requirements.txt          # Python dependencies (none)
-└── README.md                 # This file
+
+## 🤝 Contributing
+
+Contributions are welcome! To contribute:
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/my-feature`
+3. Make your changes and ensure tests pass:
+   ```bash
+   make test
+   make lint
+   make format
+   ```
+4. Commit with clear messages: `git commit -am "Add new feature"`
+5. Push to your fork: `git push origin feature/my-feature`
+6. Open a pull request
+
+### Code style
+
+- **Formatting:** Black (line length 100)
+- **Linting:** Ruff (E, F, W, I rules)
+- **Type hints:** Recommended for new code
+- **Tests:** Required for new features
+
+Run before committing:
+```bash
+make format lint test
 ```

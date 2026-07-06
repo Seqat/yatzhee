@@ -40,9 +40,15 @@ class Tooltip:
         border = tk.Frame(tw, bg="#484f58", padx=1, pady=1)
         border.pack(fill="both", expand=True)
         label = tk.Label(
-            border, text=self.text, justify="left",
-            bg="#30363d", fg=TEXT, relief="flat",
-            font=("Courier New", 9), padx=10, pady=6,
+            border,
+            text=self.text,
+            justify="left",
+            bg="#30363d",
+            fg=TEXT,
+            relief="flat",
+            font=("Courier New", 9),
+            padx=10,
+            pady=6,
             wraplength=280,
         )
         label.pack()

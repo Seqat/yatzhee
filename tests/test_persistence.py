@@ -1,8 +1,10 @@
 """Tests for persistence and settings."""
 
-import pytest
 import tempfile
 from pathlib import Path
+
+import pytest
+
 from src.yahtzee.persistence import HighScoreManager
 from src.yahtzee.settings import GameSettings
 
@@ -33,7 +35,7 @@ class TestHighScoreManager:
         manager.add_score("Alice", 250, "local")
         manager.add_score("Bob", 300, "local")
         manager.add_score("Charlie", 200, "local")
-        
+
         scores = manager.load_scores()
         assert scores[0]["score"] == 300
         assert scores[1]["score"] == 250
@@ -53,7 +55,7 @@ class TestHighScoreManager:
         # Add 10 scores
         for i in range(10):
             manager.add_score(f"Player{i}", 100 + i * 10, "local")
-        
+
         # Score above the 10th should be high
         assert manager.is_high_score(200, min_rank=10)
         # Score below the 10th should not be high
@@ -64,7 +66,7 @@ class TestHighScoreManager:
         # Add 60 scores
         for i in range(60):
             manager.add_score(f"Player{i}", 1000 - i, "local")
-        
+
         scores = manager.load_scores(limit=100)
         assert len(scores) <= 50
 
@@ -92,7 +94,7 @@ class TestGameSettings:
         settings = GameSettings(temp_dir)
         settings.set("theme", "light")
         settings.set("sound_enabled", True)
-        
+
         # Create new instance from same directory
         settings2 = GameSettings(temp_dir)
         assert settings2.get("theme") == "light"
@@ -107,7 +109,7 @@ class TestGameSettings:
         settings = GameSettings(temp_dir)
         settings.set("theme", "light")
         settings.set("sound_enabled", True)
-        
+
         settings.reset_to_defaults()
         assert settings.get("theme") == "dark"
         assert settings.get("sound_enabled") is False
@@ -117,7 +119,7 @@ class TestGameSettings:
         # Write invalid JSON
         with open(temp_dir / "settings.json", "w") as f:
             f.write("invalid json {")
-        
+
         # Should load defaults on error
         settings2 = GameSettings(temp_dir)
         assert settings2.get("theme") == "dark"

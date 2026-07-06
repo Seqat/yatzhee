@@ -1,6 +1,5 @@
 """Tests for the scoring module."""
 
-import pytest
 from src.yahtzee.scoring import SCORE_FUNCS
 
 

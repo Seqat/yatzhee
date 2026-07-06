@@ -19,7 +19,7 @@ class GameSettings:
 
     def __init__(self, data_dir: Path | None = None):
         """Initialize settings manager.
-        
+
         Args:
             data_dir: Directory to store settings. Defaults to ~/.yahtzee
         """
@@ -35,7 +35,7 @@ class GameSettings:
         """Load settings from disk."""
         if not self.settings_file.exists():
             return
-        
+
         try:
             with open(self.settings_file, "r") as f:
                 loaded = json.load(f)
@@ -54,11 +54,11 @@ class GameSettings:
 
     def get(self, key: str, default: Any = None) -> Any:
         """Get a setting value.
-        
+
         Args:
             key: Setting key
             default: Default value if key not found
-            
+
         Returns:
             Setting value or default
         """
@@ -66,7 +66,7 @@ class GameSettings:
 
     def set(self, key: str, value: Any):
         """Set a setting value and save to disk.
-        
+
         Args:
             key: Setting key
             value: Setting value

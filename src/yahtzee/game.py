@@ -3,8 +3,13 @@
 import random
 
 from .constants import (
-    ALL_CATS, DICE_COUNT, MAX_ROLLS, TOTAL_ROUNDS,
-    UPPER_BONUS, UPPER_BONUS_THRESHOLD, UPPER_CATS,
+    ALL_CATS,
+    DICE_COUNT,
+    MAX_ROLLS,
+    TOTAL_ROUNDS,
+    UPPER_BONUS,
+    UPPER_BONUS_THRESHOLD,
+    UPPER_CATS,
 )
 from .scoring import SCORE_FUNCS
 
@@ -17,16 +22,16 @@ class YahtzeeGame:
         self.reset()
 
     def reset(self):
-        self.dice       = [1] * DICE_COUNT
-        self.held       = [False] * DICE_COUNT
+        self.dice = [1] * DICE_COUNT
+        self.held = [False] * DICE_COUNT
         self.rolls_left = MAX_ROLLS
-        self.scores     = [
+        self.scores = [
             {cat: None for cat in ALL_CATS},
             {cat: None for cat in ALL_CATS},
         ]
-        self.rounds     = [1, 1]          # per-player round counter
-        self.current    = 0               # whose turn (0 or 1)
-        self.game_over  = False
+        self.rounds = [1, 1]  # per-player round counter
+        self.current = 0  # whose turn (0 or 1)
+        self.game_over = False
 
     def roll(self):
         """Roll unheld dice. Returns True if roll was successful, False otherwise."""
@@ -49,25 +54,25 @@ class YahtzeeGame:
         Returns (success, reason) tuple for better feedback.
         """
         p = self.current
-        
+
         if self.game_over:
             return False, "Game is over"
-        
+
         if cat not in ALL_CATS:
             return False, "Invalid category"
-        
+
         if self.scores[p][cat] is not None:
             return False, "Category already scored"
-        
+
         if self.rolls_left == MAX_ROLLS:
             return False, "Must roll before scoring"
-        
+
         self.scores[p][cat] = self.potential(cat)
         self.rounds[p] += 1
         # Reset dice state for next turn
-        self.held       = [False] * DICE_COUNT
+        self.held = [False] * DICE_COUNT
         self.rolls_left = MAX_ROLLS
-        self.dice       = [1] * DICE_COUNT
+        self.dice = [1] * DICE_COUNT
         # Switch player
         self.current = 1 - p
         # Check if game is over (both players completed all rounds)
@@ -76,10 +81,7 @@ class YahtzeeGame:
         return True, "Score assigned"
 
     def _player_stats(self, p):
-        upper_sub = sum(
-            s for c, s in self.scores[p].items()
-            if c in UPPER_CATS and s is not None
-        )
+        upper_sub = sum(s for c, s in self.scores[p].items() if c in UPPER_CATS and s is not None)
         bonus = UPPER_BONUS if upper_sub >= UPPER_BONUS_THRESHOLD else 0
         total = sum(s for s in self.scores[p].values() if s is not None) + bonus
         return upper_sub, bonus, total

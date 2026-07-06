@@ -1,8 +1,7 @@
 """Tests for game validation and state queries."""
 
-import pytest
+from src.yahtzee.constants import MAX_ROLLS
 from src.yahtzee.game import YahtzeeGame
-from src.yahtzee.constants import MAX_ROLLS, UPPER_BONUS_THRESHOLD, UPPER_BONUS
 
 
 class TestGameValidation:
@@ -99,14 +98,14 @@ class TestGameStateQueries:
         available = game.get_available_categories()
         assert len(available) == 13
         assert "Ones" in available
-        
+
         game.roll()
         success, _ = game.assign("Ones")
         assert success
         # Now player 1's turn, should still have Ones available
         available = game.get_available_categories()
         assert "Ones" in available
-        
+
         # Player 1 scores Ones
         game.roll()
         success, _ = game.assign("Ones")
@@ -118,7 +117,7 @@ class TestGameStateQueries:
     def test_get_scores_summary(self):
         game = YahtzeeGame()
         summary = game.get_scores_summary()
-        
+
         assert "player_names" in summary
         assert "scores" in summary
         assert "totals" in summary
