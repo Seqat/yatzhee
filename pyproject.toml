@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "yahtzee"
+version = "0.1.0"
+description = "A 2-player Yahtzee dice game with a Tkinter GUI and AI opponents"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.8"
+dependencies = []
+
+[project.scripts]
+yahtzee = "yahtzee:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

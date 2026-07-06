@@ -63,16 +63,22 @@ python -m venv venv
 venv\Scripts\Activate.ps1
 ```
 
-### 3. Install dependencies
+### 3. Install the package
 
 ```bash
-pip install -r requirements.txt
+pip install -e .
 ```
 
 ### 4. Run the game
 
 ```bash
-python yahtzee.py
+yahtzee
+```
+
+Alternatively, without installing:
+
+```bash
+python -m yahtzee
 ```
 
 ## 🎯 How to Play
@@ -106,8 +112,21 @@ python yahtzee.py
 ## 📁 Project Structure
 
 ```
-yahtzee/
-├── yahtzee.py          # Main game (all logic + GUI)
-├── requirements.txt    # Python dependencies
-└── README.md           # This file
+yatzhee/
+├── pyproject.toml            # Package metadata & entry point
+├── src/
+│   └── yahtzee/
+│       ├── __init__.py       # Package entry point (main())
+│       ├── __main__.py       # `python -m yahtzee` support
+│       ├── constants.py      # Game rules constants & static data
+│       ├── theme.py          # Colour palette
+│       ├── scoring.py        # Category scoring functions
+│       ├── game.py           # YahtzeeGame state & turn flow
+│       ├── ai.py             # AIPlayer (easy/hard difficulty)
+│       └── ui/
+│           ├── app.py        # YahtzeeApp (Tkinter window)
+│           ├── tooltip.py    # Hover tooltip widget
+│           └── widgets.py    # Canvas drawing helpers
+├── requirements.txt          # Python dependencies (none)
+└── README.md                 # This file
 ```
