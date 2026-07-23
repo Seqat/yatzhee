@@ -97,7 +97,7 @@ class YahtzeeGame:
     def _player_stats(self, p):
         if self._upper_cache[p] is not None:
             return self._upper_cache[p]
-        
+
         upper_sub = sum(s for c, s in self.scores[p].items() if c in UPPER_CATS and s is not None)
         bonus = UPPER_BONUS if upper_sub >= UPPER_BONUS_THRESHOLD else 0
         total = sum(s for s in self.scores[p].values() if s is not None) + bonus

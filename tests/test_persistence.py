@@ -82,7 +82,8 @@ class TestGameSettings:
     def test_default_settings(self, temp_dir):
         settings = GameSettings(temp_dir)
         assert settings.get("theme") == "dark"
-        assert settings.get("sound_enabled") is False
+        assert settings.get("sound_enabled") is True
+        assert settings.get("language") == "tr"
         assert settings.get("animations_enabled") is True
 
     def test_set_and_get(self, temp_dir):
@@ -93,12 +94,12 @@ class TestGameSettings:
     def test_settings_persist_to_disk(self, temp_dir):
         settings = GameSettings(temp_dir)
         settings.set("theme", "light")
-        settings.set("sound_enabled", True)
+        settings.set("sound_enabled", False)
 
         # Create new instance from same directory
         settings2 = GameSettings(temp_dir)
         assert settings2.get("theme") == "light"
-        assert settings2.get("sound_enabled") is True
+        assert settings2.get("sound_enabled") is False
 
     def test_get_with_default(self, temp_dir):
         settings = GameSettings(temp_dir)
@@ -108,11 +109,12 @@ class TestGameSettings:
     def test_reset_to_defaults(self, temp_dir):
         settings = GameSettings(temp_dir)
         settings.set("theme", "light")
-        settings.set("sound_enabled", True)
+        settings.set("sound_enabled", False)
 
         settings.reset_to_defaults()
         assert settings.get("theme") == "dark"
-        assert settings.get("sound_enabled") is False
+        assert settings.get("sound_enabled") is True
+        assert settings.get("language") == "tr"
 
     def test_invalid_settings_file(self, temp_dir):
         # Write invalid JSON

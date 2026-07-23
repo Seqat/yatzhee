@@ -1,10 +1,8 @@
 """Tests for AI opponent logic."""
 
-import pytest
-
 from src.yahtzee.ai import AIPlayer
+from src.yahtzee.constants import ALL_CATS
 from src.yahtzee.game import YahtzeeGame
-from src.yahtzee.constants import ALL_CATS, UPPER_CATS
 
 
 class TestEasyAI:

@@ -47,7 +47,7 @@ class AIPlayer:
     def _best_hold_for_category(self, cat, dice):
         """Find the best hold pattern for a given category."""
         n = len(dice)
-        
+
         # Special handling for upper section - hold matching dice
         if cat in UPPER_CATS:
             target = UPPER_CATS.index(cat) + 1
@@ -61,17 +61,17 @@ class AIPlayer:
             if most_common_count >= 3:
                 return sum(dice), [True] * n
             return 0, [d == most_common_val for d in dice]
-        
+
         elif cat == "Four of a Kind":
             if most_common_count >= 4:
                 return sum(dice), [True] * n
             return 0, [d == most_common_val for d in dice]
-        
+
         elif cat == "Yahtzee":
             if most_common_count == 5:
                 return 50, [True] * n
             return 0, [d == most_common_val for d in dice]
-        
+
         elif cat == "Full House":
             vals = sorted(counts.values())
             if vals == [2, 3]:
@@ -91,7 +91,7 @@ class AIPlayer:
                         break
                 return 0, held
             return 0, [d == most_common_val for d in dice]
-        
+
         elif cat in ("Small Straight", "Large Straight"):
             unique_sorted = sorted(set(dice))
             held = [False] * n
@@ -99,11 +99,11 @@ class AIPlayer:
                 if d in unique_sorted:
                     held[i] = True
             return 0, held
-        
+
         elif cat == "Chance":
             # Hold all dice for chance - we want to maximize sum
             return sum(dice), [True] * n
-        
+
         return 0, [False] * n
 
     def _hard_choose_category(self, game):

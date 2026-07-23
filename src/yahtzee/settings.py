@@ -12,7 +12,8 @@ class GameSettings:
 
     DEFAULT_SETTINGS = {
         "theme": "dark",  # "dark" or "light"
-        "sound_enabled": False,
+        "sound_enabled": True,
+        "language": "tr",  # "tr" or "en"
         "animations_enabled": True,
         "ai_difficulty": "easy",  # "easy" or "hard"
         "player_1_name": "Player 1",

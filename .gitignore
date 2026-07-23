@@ -1,4 +1,3 @@
-```
 # Compiled Python files
 *.pyc
 __pycache__/
@@ -34,4 +33,3 @@ htmlcov/
 # Build directories
 build/
 dist/
-```

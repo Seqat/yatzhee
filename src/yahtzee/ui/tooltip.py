@@ -39,9 +39,10 @@ class Tooltip:
         # Border effect
         border = tk.Frame(tw, bg="#484f58", padx=1, pady=1)
         border.pack(fill="both", expand=True)
+        text_str = self.text() if callable(self.text) else self.text
         label = tk.Label(
             border,
-            text=self.text,
+            text=text_str,
             justify="left",
             bg="#30363d",
             fg=TEXT,
