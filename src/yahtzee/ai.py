@@ -2,7 +2,6 @@
 
 import random
 from collections import Counter
-from itertools import combinations
 
 from .constants import ALL_CATS, DICE_COUNT, UPPER_CATS
 from .scoring import SCORE_FUNCS
@@ -38,7 +37,8 @@ class AIPlayer:
         # For each available category, figure out which dice to keep
         for cat in available:
             score, hold = self._best_hold_for_category(cat, dice)
-            if score > best_score:
+            # Prefer holds that actually keep some dice
+            if score > best_score or (score == best_score and sum(hold) > sum(best_hold)):
                 best_score = score
                 best_hold = hold
 
@@ -47,74 +47,64 @@ class AIPlayer:
     def _best_hold_for_category(self, cat, dice):
         """Find the best hold pattern for a given category."""
         n = len(dice)
-        best_score = SCORE_FUNCS[cat](dice)
-        best_hold = [True] * n  # default: hold all (current score is best)
+        
+        # Special handling for upper section - hold matching dice
+        if cat in UPPER_CATS:
+            target = UPPER_CATS.index(cat) + 1
+            hold = [d == target for d in dice]
+            return SCORE_FUNCS[cat](dice), hold
 
-        # Try all possible hold subsets (2^5 = 32 combinations)
-        for num_held in range(n + 1):
-            for held_indices in combinations(range(n), num_held):
-                hold = [False] * n
-                for idx in held_indices:
-                    hold[idx] = True
-                # Score if we hold these dice (approximate: just use current)
-                test_dice = [dice[i] for i in range(n) if hold[i]]
-                if len(test_dice) == n:
-                    score = SCORE_FUNCS[cat](dice)
-                else:
-                    score = SCORE_FUNCS[cat](dice)  # current dice for eval
-
-                # For upper section, hold matching dice
-                if cat in UPPER_CATS:
-                    target = UPPER_CATS.index(cat) + 1
-                    hold = [d == target for d in dice]
-                    score = SCORE_FUNCS[cat](dice)
-                    return score, hold
-
-                if score > best_score:
-                    best_score = score
-                    best_hold = hold
-
-        # Special heuristics for lower section
         counts = Counter(dice)
         most_common_val, most_common_count = counts.most_common(1)[0]
 
-        if cat in ("Three of a Kind", "Four of a Kind", "Yahtzee"):
-            # Hold the most frequent die value
-            best_hold = [d == most_common_val for d in dice]
-        elif cat == "Full House":
+        if cat == "Three of a Kind":
             if most_common_count >= 3:
-                # Hold three of the most common, and a pair if exists
+                return sum(dice), [True] * n
+            return 0, [d == most_common_val for d in dice]
+        
+        elif cat == "Four of a Kind":
+            if most_common_count >= 4:
+                return sum(dice), [True] * n
+            return 0, [d == most_common_val for d in dice]
+        
+        elif cat == "Yahtzee":
+            if most_common_count == 5:
+                return 50, [True] * n
+            return 0, [d == most_common_val for d in dice]
+        
+        elif cat == "Full House":
+            vals = sorted(counts.values())
+            if vals == [2, 3]:
+                return 25, [True] * n
+            if most_common_count >= 3:
                 held = [False] * n
                 count = 0
                 for i, d in enumerate(dice):
                     if d == most_common_val and count < 3:
                         held[i] = True
                         count += 1
-                # Try to hold a pair of another value
                 for val, cnt in counts.items():
                     if val != most_common_val and cnt >= 2:
-                        pair_count = 0
                         for i, d in enumerate(dice):
-                            if d == val and pair_count < 2:
+                            if d == val and held[i] is False:
                                 held[i] = True
-                                pair_count += 1
                         break
-                best_hold = held
-            else:
-                best_hold = [d == most_common_val for d in dice]
+                return 0, held
+            return 0, [d == most_common_val for d in dice]
+        
         elif cat in ("Small Straight", "Large Straight"):
-            # Hold unique sequential dice
-            seen = set()
-            best_hold = [False] * n
+            unique_sorted = sorted(set(dice))
+            held = [False] * n
             for i, d in enumerate(dice):
-                if d not in seen:
-                    best_hold[i] = True
-                    seen.add(d)
+                if d in unique_sorted:
+                    held[i] = True
+            return 0, held
+        
         elif cat == "Chance":
-            # Hold high-value dice (5s and 6s)
-            best_hold = [d >= 5 for d in dice]
-
-        return best_score, best_hold
+            # Hold all dice for chance - we want to maximize sum
+            return sum(dice), [True] * n
+        
+        return 0, [False] * n
 
     def _hard_choose_category(self, game):
         """Hard AI: pick the category that yields the highest score."""

@@ -8,15 +8,18 @@ def _upper(n):
 
 
 def _three_kind(dice):
-    return sum(dice) if any(v >= 3 for v in Counter(dice).values()) else 0
+    counts = Counter(dice)
+    return sum(dice) if any(v >= 3 for v in counts.values()) else 0
 
 
 def _four_kind(dice):
-    return sum(dice) if any(v >= 4 for v in Counter(dice).values()) else 0
+    counts = Counter(dice)
+    return sum(dice) if any(v >= 4 for v in counts.values()) else 0
 
 
 def _full_house(dice):
-    vals = sorted(Counter(dice).values())
+    counts = Counter(dice)
+    vals = sorted(counts.values())
     return 25 if vals == [2, 3] else 0
 
 
@@ -26,11 +29,13 @@ def _small_straight(dice):
 
 
 def _large_straight(dice):
-    return 40 if set(dice) in ({1, 2, 3, 4, 5}, {2, 3, 4, 5, 6}) else 0
+    s = set(dice)
+    return 40 if s in ({1, 2, 3, 4, 5}, {2, 3, 4, 5, 6}) else 0
 
 
 def _yahtzee(dice):
-    return 50 if len(set(dice)) == 1 else 0
+    first = dice[0]
+    return 50 if all(d == first for d in dice) else 0
 
 
 def _chance(dice):

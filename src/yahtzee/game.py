@@ -17,6 +17,18 @@ from .scoring import SCORE_FUNCS
 class YahtzeeGame:
     """Manages state for a 2-player Yahtzee game."""
 
+    __slots__ = [
+        "player_names",
+        "dice",
+        "held",
+        "rolls_left",
+        "scores",
+        "rounds",
+        "current",
+        "game_over",
+        "_upper_cache",
+    ]
+
     def __init__(self):
         self.player_names = ["Player 1", "Player 2"]
         self.reset()
@@ -29,9 +41,10 @@ class YahtzeeGame:
             {cat: None for cat in ALL_CATS},
             {cat: None for cat in ALL_CATS},
         ]
-        self.rounds = [1, 1]  # per-player round counter
-        self.current = 0  # whose turn (0 or 1)
+        self.rounds = [1, 1]
+        self.current = 0
         self.game_over = False
+        self._upper_cache = [None, None]
 
     def roll(self):
         """Roll unheld dice. Returns True if roll was successful, False otherwise."""
@@ -69,6 +82,7 @@ class YahtzeeGame:
 
         self.scores[p][cat] = self.potential(cat)
         self.rounds[p] += 1
+        self._upper_cache[p] = None  # Invalidate cache
         # Reset dice state for next turn
         self.held = [False] * DICE_COUNT
         self.rolls_left = MAX_ROLLS
@@ -81,10 +95,14 @@ class YahtzeeGame:
         return True, "Score assigned"
 
     def _player_stats(self, p):
+        if self._upper_cache[p] is not None:
+            return self._upper_cache[p]
+        
         upper_sub = sum(s for c, s in self.scores[p].items() if c in UPPER_CATS and s is not None)
         bonus = UPPER_BONUS if upper_sub >= UPPER_BONUS_THRESHOLD else 0
         total = sum(s for s in self.scores[p].values() if s is not None) + bonus
-        return upper_sub, bonus, total
+        self._upper_cache[p] = (upper_sub, bonus, total)
+        return self._upper_cache[p]
 
     def upper_subtotal(self, p):
         return self._player_stats(p)[0]
